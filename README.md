@@ -1,8 +1,16 @@
-# React + Vite
+# React Ignite Posts
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
+A Basic React Application to show users posts and comments
 
-Currently, two official plugins are available:
+## Installation
+Instructions on how to install the project dependencies.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Usage
+Instructions on how to use the project.
+
+## Scripts
+- `dev`: Starts the development server using Vite.
+- `build`: Builds the project using Vite.
+- `lint`: Runs ESLint to lint the project files.
+- `preview`: Starts the Vite preview server.

@@ -7,7 +7,13 @@ import { Avatar } from "./Avatar";
 import { useState } from "react";
 
 export function Post({ author, content, publishedAt = Date.now() }) {
-  const [comments, setComments] = useState([1, 2]);
+  const [comments, setComments] = useState([
+    {
+      id: new Date().valueOf(), // Just a simple id creation
+      content: "Nice post eh!",
+    },
+  ]);
+  const [newCommentText, setNewCommentText] = useState("");
 
   const publishedDateFormatted = format(publishedAt, "MMM do hh:mm a", {
     locale: enUS,
@@ -18,11 +24,35 @@ export function Post({ author, content, publishedAt = Date.now() }) {
     addSuffix: true,
   });
 
-  function handleCreateNewComment() {
-    event.preventDefault();
-
-    setComments([...comments, comments.length + 1]);
+  function handleCreateNewComment(e) {
+    e.preventDefault();
+    setComments([
+      ...comments,
+      {
+        id: new Date().valueOf(),
+        content: newCommentText,
+      },
+    ]);
+    setNewCommentText("");
   }
+
+  function handleNewCommentChange(e) {
+    e.target.setCustomValidity("");
+    setNewCommentText(e.target.value);
+  }
+
+  function handleNewCommentInvalid(e) {
+    e.target.setCustomValidity("This is a mandatory field");
+  }
+
+  function deleteComment(commentId) {
+    const commentsWithoutDeletedOne = comments.filter(
+      (c) => c.id !== commentId
+    );
+    setComments(commentsWithoutDeletedOne);
+  }
+
+  const isNewCommentEmpty = !newCommentText.length;
 
   return (
     <article className={styles.post}>
@@ -42,12 +72,12 @@ export function Post({ author, content, publishedAt = Date.now() }) {
         </time>
       </header>
       <div className={styles.content}>
-        {content.map((item, index) => {
+        {content.map((item) => {
           if (item.type === "paragraph")
-            return <p key={index}>{item.content}</p>;
+            return <p key={item.content}>{item.content}</p>;
           if (item.type === "link")
             return (
-              <p key={index}>
+              <p key={item.content}>
                 <a href="#">{item.content}</a>
               </p>
             );
@@ -56,14 +86,28 @@ export function Post({ author, content, publishedAt = Date.now() }) {
 
       <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Leave your comment</strong>
-        <textarea placeholder="Leave your comment" />
+        <textarea
+          name="comment"
+          placeholder="Leave your comment"
+          value={newCommentText}
+          onChange={handleNewCommentChange}
+          onInvalid={handleNewCommentInvalid}
+          required
+        />
         <footer>
-          <button type="submit">Publish</button>
+          <button disabled={isNewCommentEmpty} type="submit">
+            Publish
+          </button>
         </footer>
       </form>
       <div className={styles.commentList}>
         {comments.map((comment) => (
-          <Comment key={comment} />
+          <Comment
+            key={comment.id}
+            id={comment.id}
+            content={comment.content}
+            onDeleteComment={deleteComment}
+          />
         ))}
       </div>
     </article>

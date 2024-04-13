@@ -98,6 +98,10 @@
   button[type="submit"]:hover {
     background: var(--green-300);
   }
+  button[type="submit"]:disabled {
+    background: var(--gray-400);
+    pointer-events: none;
+  }
 }
 
 .commentForm:focus-within footer {

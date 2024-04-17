@@ -1,10 +1,15 @@
-import PropTypes from "prop-types";
 import { Avatar } from "./Avatar";
 import styles from "./Comment.module.css";
 import { Trash, ThumbsUp } from "@phosphor-icons/react";
 import { useState } from "react";
 
-export function Comment({ id, content, onDeleteComment }) {
+interface CommentProps {
+  id: number;
+  content: string;
+  onDeleteComment: (commentId: number) => void;
+}
+
+export function Comment({ id, content, onDeleteComment }: CommentProps) {
   const [likeCount, setLikeCount] = useState(0);
 
   const oneHourAgo = Date.now() - 60 * 60 * 1000;
@@ -26,7 +31,7 @@ export function Comment({ id, content, onDeleteComment }) {
           <header>
             <div className={styles.authorAndTime}>
               <strong>Flavio Carvalho</strong>
-              <time title={new Date(oneHourAgo)} dateTime={oneHourAgo}>
+              <time title={new Date(oneHourAgo).toLocaleDateString()} dateTime={oneHourAgo.toString()}>
                 Published 1h ago
               </time>
             </div>
@@ -45,9 +50,3 @@ export function Comment({ id, content, onDeleteComment }) {
     </div>
   );
 }
-
-Comment.propTypes = {
-  id: PropTypes.number.isRequired,
-  content: PropTypes.string.isRequired,
-  onDeleteComment: PropTypes.func.isRequired,
-};

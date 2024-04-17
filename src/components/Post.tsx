@@ -1,12 +1,31 @@
-import PropTypes from "prop-types";
 import styles from "./Post.module.css";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 import { format, formatDistanceToNow } from "date-fns";
-import enUS from "date-fns/locale/en-US";
+import { enUS } from "date-fns/locale/en-US";
 import { Comment } from "./Comment";
 import { Avatar } from "./Avatar";
-import { useState } from "react";
 
-export function Post({ author, content, publishedAt = Date.now() }) {
+interface Author {
+  name: string;
+  role: string;
+  avatarUrl: string;
+}
+
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
+
+export interface PostType {
+  id: number;
+  author: Author;
+  publishedAt: Date;
+  content: Content[];
+}
+
+interface PostProps extends PostType {}
+
+export function Post({ author, content, publishedAt = new Date(Date.now()) }: PostProps) {
   const [comments, setComments] = useState([
     {
       id: new Date().valueOf(), // Just a simple id creation
@@ -24,7 +43,7 @@ export function Post({ author, content, publishedAt = Date.now() }) {
     addSuffix: true,
   });
 
-  function handleCreateNewComment(e) {
+  function handleCreateNewComment(e: FormEvent) {
     e.preventDefault();
     setComments([
       ...comments,
@@ -36,16 +55,16 @@ export function Post({ author, content, publishedAt = Date.now() }) {
     setNewCommentText("");
   }
 
-  function handleNewCommentChange(e) {
+  function handleNewCommentChange(e: ChangeEvent<HTMLTextAreaElement>) {
     e.target.setCustomValidity("");
     setNewCommentText(e.target.value);
   }
 
-  function handleNewCommentInvalid(e) {
+  function handleNewCommentInvalid(e: InvalidEvent<HTMLTextAreaElement>) {
     e.target.setCustomValidity("This is a mandatory field");
   }
 
-  function deleteComment(commentId) {
+  function deleteComment(commentId: number) {
     const commentsWithoutDeletedOne = comments.filter(
       (c) => c.id !== commentId
     );
@@ -113,9 +132,3 @@ export function Post({ author, content, publishedAt = Date.now() }) {
     </article>
   );
 }
-
-Post.propTypes = {
-  author: PropTypes.object.isRequired,
-  content: PropTypes.array.isRequired,
-  publishedAt: PropTypes.instanceOf(Date),
-};
